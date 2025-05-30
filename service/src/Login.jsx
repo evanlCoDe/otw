@@ -1,4 +1,4 @@
-// Login.js
+// Login.jsx
 import { useState } from "react";
 import { db } from "./firebase";
 import { collection, query, where, getDocs } from "firebase/firestore";
@@ -11,11 +11,11 @@ function Login({ onLogin }) {
     const q = query(
       collection(db, "users"),
       where("username", "==", username),
-      where("password", "==", password) // 實務應加密
+      where("password", "==", password)
     );
     const snapshot = await getDocs(q);
     if (!snapshot.empty) {
-      onLogin(username); // 登入成功
+      onLogin(username);
     } else {
       alert("帳號或密碼錯誤");
     }

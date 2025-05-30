@@ -1,4 +1,5 @@
-// TodoList.js
+
+// TodoList.jsx
 import { db } from "./firebase";
 import {
   collection,
@@ -8,10 +9,12 @@ import {
   doc,
 } from "firebase/firestore";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-function TodoList() {
+function TodoList({ user }) {
   const [tasks, setTasks] = useState([]);
   const [text, setText] = useState("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const unsub = onSnapshot(collection(db, "tasks"), (snapshot) => {
@@ -22,7 +25,15 @@ function TodoList() {
 
   const addTask = async () => {
     if (text.trim()) {
-      await addDoc(collection(db, "tasks"), { text });
+      await addDoc(collection(db, "tasks"), {
+        text,
+        address: "",
+        mapLink: "",
+        description: "",
+        images: [],
+        votes: 0,
+        creator: user
+      });
       setText("");
     }
   };
@@ -31,14 +42,47 @@ function TodoList() {
     await deleteDoc(doc(db, "tasks", id));
   };
 
+  // return (
+  //   <div>
+  //     <h2>任務清單</h2>
+  //     <input value={text} onChange={(e) => setText(e.target.value)} />
+  //     <button onClick={addTask}>新增任務</button>
+  //     <ul>
+  //       {tasks.map((task) => (
+  //         <li key={task.id}>
+  //           <span onClick={() => navigate(`/task/${task.id}`)} style={{ cursor: "pointer", textDecoration: "underline" }}>{task.text}</span>
+  //           <button onClick={() => removeTask(task.id)}>刪除</button>
+  //         </li>
+  //       ))}
+  //     </ul>
+  //   </div>
+  // );
   return (
-    <div>
-      <input value={text} onChange={(e) => setText(e.target.value)} />
-      <button onClick={addTask}>新增任務</button>
-      <ul>
+    <div className="container mt-4">
+      <h2 className="mb-4">任務清單</h2>
+      <div className="input-group mb-3">
+        <input
+          className="form-control"
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder="輸入新任務"
+        />
+        <button className="btn btn-primary" onClick={addTask}>
+          新增任務
+        </button>
+      </div>
+      <ul className="list-group">
         {tasks.map((task) => (
-          <li key={task.id}>
-            {task.text} <button onClick={() => removeTask(task.id)}>刪除</button>
+          <li className="list-group-item d-flex justify-content-between align-items-center" key={task.id}>
+            <span
+              onClick={() => navigate(`/task/${task.id}`)}
+              style={{ cursor: "pointer", textDecoration: "underline" }}
+            >
+              {task.text}
+            </span>
+            <button className="btn btn-danger btn-sm" onClick={() => removeTask(task.id)}>
+              刪除
+            </button>
           </li>
         ))}
       </ul>
