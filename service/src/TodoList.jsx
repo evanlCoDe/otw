@@ -42,33 +42,19 @@ function TodoList({ user }) {
     await deleteDoc(doc(db, "tasks", id));
   };
 
-  // return (
-  //   <div>
-  //     <h2>任務清單</h2>
-  //     <input value={text} onChange={(e) => setText(e.target.value)} />
-  //     <button onClick={addTask}>新增任務</button>
-  //     <ul>
-  //       {tasks.map((task) => (
-  //         <li key={task.id}>
-  //           <span onClick={() => navigate(`/task/${task.id}`)} style={{ cursor: "pointer", textDecoration: "underline" }}>{task.text}</span>
-  //           <button onClick={() => removeTask(task.id)}>刪除</button>
-  //         </li>
-  //       ))}
-  //     </ul>
-  //   </div>
-  // );
+
   return (
     <div className="container mt-4">
-      <h2 className="mb-4">任務清單</h2>
+      <h2 className="mb-4">Tasks</h2>
       <div className="input-group mb-3">
         <input
           className="form-control"
           value={text}
           onChange={(e) => setText(e.target.value)}
-          placeholder="輸入新任務"
+          placeholder="Enter new task"
         />
         <button className="btn btn-primary" onClick={addTask}>
-          新增任務
+          New task
         </button>
       </div>
       <ul className="list-group">
@@ -81,7 +67,7 @@ function TodoList({ user }) {
               {task.text}
             </span>
             <button className="btn btn-danger btn-sm" onClick={() => removeTask(task.id)}>
-              刪除
+              Delete
             </button>
           </li>
         ))}

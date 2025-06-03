@@ -17,27 +17,40 @@ function Login({ onLogin }) {
     if (!snapshot.empty) {
       onLogin(username);
     } else {
-      alert("帳號或密碼錯誤");
+      alert("Incorrect account id or password");
     }
   };
 
   return (
-    <div>
-      <h2>登入</h2>
-      <input
-        placeholder="帳號"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="密碼"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
-      <button onClick={handleLogin}>登入</button>
+  <div
+    className="container-fluid min-vh-100 d-flex justify-content-center align-items-center"
+    style={{ background: "#f8f9fa" }}
+  >
+    <div className="card p-4 shadow" style={{ minWidth: "350px" }}>
+      <h2 className="mb-4 text-center">Login</h2>
+      <div className="mb-3">
+        <input
+          className="form-control"
+          placeholder="Account ID"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+      </div>
+      <div className="mb-3">
+        <input
+          type="password"
+          className="form-control"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </div>
+      <button className="btn btn-primary w-100" onClick={handleLogin}>
+        Login
+      </button>
     </div>
-  );
+  </div>
+);
 }
 
 export default Login;

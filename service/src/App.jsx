@@ -13,7 +13,7 @@ function App() {
       {user ? (
         <Routes>
           <Route path="/" element={<TodoList user={user}/>} />
-          <Route path="/task/:id" element={<TaskDetail />} />
+          <Route path="/task/:id" element={<TaskDetail user={user}/>} />
         </Routes>
       ) : (
         <Login onLogin={(username) => setUser(username)} />

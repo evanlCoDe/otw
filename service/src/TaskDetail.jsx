@@ -24,7 +24,7 @@ function TaskDetail({ user }) {
   const save = async () => {
     const { id, ...data } = task;
     await updateDoc(doc(db, "tasks", id), data);
-    alert("儲存成功");
+    alert("Saved successfully");
   };
 
   const vote = async () => {
@@ -33,44 +33,106 @@ function TaskDetail({ user }) {
     await updateDoc(doc(db, "tasks", id), { votes: updated.votes });
   };
 
-  if (!task) return <p>載入中...</p>;
+  if (!task) return <p>Loading...</p>;
 
   const editable = task.creator === user;
-
-  return (
-    <div>
-      <h2>任務詳情</h2>
-      <p><strong>建立者：</strong>{task.creator}</p>
-      <button onClick={vote}>👍 投票 ({task.votes})</button>
+  
+return (
+  <div className="container py-4">
+    <div className="card shadow p-4 mx-auto" style={{ maxWidth: 600 }}>
+      <h2 className="mb-3 text-center">Task details</h2>
+      <p><strong>Creator：</strong>{task.creator}</p>
+      <button className="btn btn-outline-primary mb-3" onClick={vote}>
+        👍 Vote <span className="badge bg-primary ms-2">{task.votes}</span>
+      </button>
 
       {editable ? (
+          <>
+    {/* ...other input fields... */}
+    <div className="mb-3">
+      <label className="form-label">Image links</label>
+      {task.images.map((url, idx) => (
+        <div className="input-group mb-2" key={idx}>
+          <input
+            type="text"
+            className="form-control"
+            value={url}
+            onChange={e => {
+              const newImages = [...task.images];
+              newImages[idx] = e.target.value;
+              handleChange("images", newImages);
+            }}
+            placeholder={`Image link #${idx + 1}`}
+          />
+          <button
+            className="btn btn-outline-danger"
+            type="button"
+            onClick={() => {
+              const newImages = task.images.filter((_, i) => i !== idx);
+              handleChange("images", newImages);
+            }}
+            tabIndex={-1}
+          >
+            <i className="bi bi-trash"></i> Delete
+          </button>
+        </div>
+      ))}
+      <button
+        className="btn btn-outline-primary w-100"
+        type="button"
+        onClick={() => handleChange("images", [...task.images, ""])}
+      >
+        <i className="bi bi-plus"></i> Add Link
+      </button>
+    </div>
+    {/* ...rest of editable fields... */}
+    <button className="btn btn-success w-100" onClick={save}>Save</button>
+  </>
+) : (
         <>
-          <input value={task.text} onChange={(e) => handleChange("text", e.target.value)} placeholder="標題" />
-          <input value={task.address} onChange={(e) => handleChange("address", e.target.value)} placeholder="地址" />
-          <input value={task.mapLink} onChange={(e) => handleChange("mapLink", e.target.value)} placeholder="Google 地圖連結" />
-          <textarea value={task.description} onChange={(e) => handleChange("description", e.target.value)} placeholder="描述" />
-          <textarea value={task.images.join("\n")} onChange={(e) => handleChange("images", e.target.value.split("\n"))} placeholder="圖片連結，每行一個" />
-          <button onClick={save}>儲存</button>
-        </>
-      ) : (
-        <>
-          <p><strong>標題：</strong>{task.text}</p>
-          <p><strong>地址：</strong>{task.address}</p>
-          <p><strong>地圖：</strong><a href={task.mapLink} target="_blank" rel="noreferrer">查看地圖</a></p>
-          <p><strong>描述：</strong>{task.description}</p>
+          <p><strong>Task name：</strong>{task.text}</p>
+          <p><strong>Address：</strong>{task.address}</p>
+          <p>
+            <strong>Map：</strong>
+            {task.mapLink && (
+              task.mapLink.includes("<iframe")
+                ? <div className="my-2" dangerouslySetInnerHTML={{ __html: task.mapLink }} />
+                : <div className="my-2">
+                    <iframe
+                      src={task.mapLink}
+                      width="100%"
+                      height="300"
+                      style={{ border: 0 }}
+                      allowFullScreen=""
+                      loading="lazy"
+                      referrerPolicy="no-referrer-when-downgrade"
+                      title="Google Map"
+                    ></iframe>
+                    <a href={task.mapLink} target="_blank" rel="noopener noreferrer">View Map</a>
+                  </div>
+            )}
+          </p>
+          <p><strong>Description：</strong>{task.description}</p>
         </>
       )}
 
-      <div>
-        <strong>圖片預覽：</strong>
-        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+      <div className="mt-4">
+        <strong>Picture preview：</strong>
+        <div className="d-flex gap-2 flex-wrap mt-2">
           {task.images.map((url, index) => (
-            <img key={index} src={url} alt={`img-${index}`} style={{ width: '100px', height: '100px', objectFit: 'cover' }} />
+            <img
+              key={index}
+              src={url}
+              alt={`img-${index}`}
+              className="rounded border"
+              style={{ width: '100px', height: '100px', objectFit: 'cover' }}
+            />
           ))}
         </div>
       </div>
     </div>
-  );
+  </div>
+);
 }
 
 export default TaskDetail;
