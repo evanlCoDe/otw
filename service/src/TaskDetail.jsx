@@ -1,11 +1,12 @@
 // TaskDetail.jsx
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { db } from "./firebase";
-import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
 
 function TaskDetail({ user }) {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [task, setTask] = useState(null);
 
   useEffect(() => {
@@ -26,25 +27,44 @@ function TaskDetail({ user }) {
     await updateDoc(doc(db, "tasks", id), data);
     alert("Saved successfully");
   };
+  
 
+  const hasVoted = task && Array.isArray(task.voters) && task.voters.includes(user);
   const vote = async () => {
-    const updated = { ...task, votes: task.votes + 1 };
+    if (hasVoted) {
+      alert("You Voted！");
+      return;
+    }
+    const updated = { ...task, votes: task.votes + 1, voters: [...(task.voters || []), user] };
     setTask(updated);
-    await updateDoc(doc(db, "tasks", id), { votes: updated.votes });
+    await updateDoc(doc(db, "tasks", id), {
+      votes: updated.votes,
+      voters: arrayUnion(user)
+    });
   };
-
   if (!task) return <p>Loading...</p>;
 
   const editable = task.creator === user;
   
 return (
   <div className="container py-4">
+    <button
+        className="btn btn-secondary mb-3"
+        onClick={() => navigate("/")}
+      >
+        Todo List
+      </button>
     <div className="card shadow p-4 mx-auto" style={{ maxWidth: 600 }}>
       <h2 className="mb-3 text-center">Task details</h2>
       <p><strong>Creator：</strong>{task.creator}</p>
-      <button className="btn btn-outline-primary mb-3" onClick={vote}>
-        👍 Vote <span className="badge bg-primary ms-2">{task.votes}</span>
-      </button>
+      <button 
+          className="btn btn-outline-primary mb-3" 
+          onClick={vote} 
+          disabled={hasVoted}
+        >
+          👍 Vote <span className="badge bg-primary ms-2">{task.votes}</span>
+          {hasVoted && <span className="ms-2 text-success">Voted</span>}
+        </button>
 
       {editable ? (
           <>
