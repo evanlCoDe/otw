@@ -29,22 +29,22 @@ function TaskDetail({ user }) {
   };
   
 
-  const hasVoted = task && Array.isArray(task.voters) && task.voters.includes(user);
+  const hasVoted = task && Array.isArray(task.voters) && task.voters.includes(user.username);
   const vote = async () => {
     if (hasVoted) {
       alert("You Voted！");
       return;
     }
-    const updated = { ...task, votes: task.votes + 1, voters: [...(task.voters || []), user] };
+    const updated = { ...task, votes: task.votes + 1, voters: [...(task.voters || []), user.username] };
     setTask(updated);
     await updateDoc(doc(db, "tasks", id), {
       votes: updated.votes,
-      voters: arrayUnion(user)
+      voters: arrayUnion(user.username)
     });
   };
   if (!task) return <p>Loading...</p>;
 
-  const editable = task.creator === user;
+  const editable = task.creator === user.username;
   
 return (
   <div className="container py-4">

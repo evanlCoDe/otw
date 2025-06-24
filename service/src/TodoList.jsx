@@ -32,7 +32,7 @@ function TodoList({ user }) {
         description: "",
         images: [],
         votes: 0,
-        creator: user
+        creator: user.username,
       });
       setText("");
     }
@@ -41,7 +41,6 @@ function TodoList({ user }) {
   const removeTask = async (id) => {
     await deleteDoc(doc(db, "tasks", id));
   };
-
 
   return (
     <div className="container mt-4">
@@ -59,6 +58,7 @@ function TodoList({ user }) {
       </div>
       <ul className="list-group">
         {tasks.map((task) => (
+
           <li className="list-group-item d-flex justify-content-between align-items-center" key={task.id}>
             <span
               onClick={() => navigate(`/task/${task.id}`)}
@@ -66,9 +66,11 @@ function TodoList({ user }) {
             >
               {task.text}
             </span>
-            <button className="btn btn-danger btn-sm" onClick={() => removeTask(task.id)}>
-              Delete
-            </button>
+            {task&& (task.creator === user.username || user.SuperAccount ) && (
+        <button className="btn btn-danger btn-sm" onClick={() => removeTask(task.id)}>
+          Delete
+        </button>
+      )}
           </li>
         ))}
       </ul>

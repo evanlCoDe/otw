@@ -11,12 +11,20 @@ function App() {
   return (
     <Router>
       {user ? (
+        <>
+        <div className="d-flex justify-content-end p-3">
+            <button className="btn btn-outline-danger" onClick={() => setUser(null)}>
+              Logout
+            </button>
+          </div>
+
         <Routes>
           <Route path="/" element={<TodoList user={user}/>} />
           <Route path="/task/:id" element={<TaskDetail user={user}/>} />
         </Routes>
+        </>
       ) : (
-        <Login onLogin={(username) => setUser(username)} />
+        <Login onLogin={(userObj) => setUser(userObj)} />
       )}
     </Router>
   );
