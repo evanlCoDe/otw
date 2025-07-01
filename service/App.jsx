@@ -59,6 +59,7 @@ function App() {
           `}
         </style>
       </div>
+      
       {user ? (
         <>
           <div className="d-flex justify-content-end p-3">
@@ -74,6 +75,26 @@ function App() {
       ) : (
         <Login onLogin={(userObj) => setUser(userObj)} />
       )}
+      {/* Copyright footer */}
+    <footer
+      style={{
+        position: "fixed",
+        bottom: 10,
+        left: 0,
+        width: "100vw",
+        textAlign: "center",
+        color: "#888",
+        fontSize: "0.95rem",
+        // zIndex: 9999,
+        // pointerEvents: "none"
+      }}
+    >
+      © {new Date().getFullYear()} OTW. All rights reserved.
+      {"  "}
+      <a href="https://docs.google.com/forms/d/e/1FAIpQLSc6w2AhsBGIPPChMwmt2-S8ZKwt9YWnn29DcT4Ek2RL96aR4A/viewform?usp=dialog" target="_blank" style={{ color: "#888", textDecoration: "underline" }}>
+        Report a problem
+      </a>
+    </footer>
     </Router>
   );
 }
